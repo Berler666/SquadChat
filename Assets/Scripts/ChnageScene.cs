@@ -12,4 +12,12 @@ public class ChnageScene : MonoBehaviour {
 	{
 		Application.LoadLevel(levelName);
 	}
+
+	public void CloseApp()
+	{
+		Application.Quit();
+	}
+
+
+
 }
