@@ -11,9 +11,19 @@ public class NetworkManager : PunBehaviour {
     [SerializeField] InputField messageInput;
     [SerializeField] Text chatLog;
     [SerializeField] Text connectionLog;
+    [SerializeField] Button sendButton;
     Queue<string> messages = new Queue<string>(MESSAGE_COUNT);
     
     void Start() {
+        Init();
+        InitPhoton();
+    }
+
+    void Init() {
+        sendButton.onClick.AddListener(CheckSendMessage);
+    }
+
+    void InitPhoton() {
         // Choose what Photon logs
         PhotonNetwork.logLevel =
             PhotonLogLevel.ErrorsOnly;
@@ -75,15 +85,6 @@ public class NetworkManager : PunBehaviour {
             + " has joined " +
             PhotonNetwork.room.name
         );
-
-        StartCoroutine(MessageInputRoutine());
-    }
-
-    IEnumerator MessageInputRoutine() {
-        while (true) {
-            CheckSendMessage();
-            yield return null;
-        }
     }
 
     void CheckSendMessage() {
@@ -92,8 +93,7 @@ public class NetworkManager : PunBehaviour {
     }
 
     bool CanSendMessage() {
-        return Input.GetKeyDown(KeyCode.Return) &&
-               messageInput.text.Length != 0;
+        return messageInput.text.Length != 0;
     }
 
     void SendMessage() {
