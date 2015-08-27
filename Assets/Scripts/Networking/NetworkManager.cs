@@ -8,7 +8,6 @@ public class NetworkManager : PunBehaviour {
     const string ROOM_NAME = "SQUAD_CHAT";
     const int MESSAGE_COUNT = 6;
 
-    [SerializeField] string userName;
     [SerializeField] InputField messageInput;
     [SerializeField] Text chatLog;
     [SerializeField] Text connectionLog;
@@ -54,7 +53,7 @@ public class NetworkManager : PunBehaviour {
         print("Joining or creating room [" + ROOM_NAME + "]...");
 
         // Set username (needs validation).
-        PhotonNetwork.player.name = userName;
+        PhotonNetwork.player.name = User.GetName();
 
         // Join room if it exists or create new one otherwise.
         PhotonNetwork.JoinOrCreateRoom(
