@@ -8,13 +8,22 @@ public class NetworkManager : PunBehaviour {
     const string ROOM_NAME = "SQUAD_CHAT";
     const int MESSAGE_COUNT = 6;
 
-    [SerializeField] string userName;
     [SerializeField] InputField messageInput;
     [SerializeField] Text chatLog;
     [SerializeField] Text connectionLog;
+    [SerializeField] Button sendButton;
     Queue<string> messages = new Queue<string>(MESSAGE_COUNT);
     
     void Start() {
+        Init();
+        InitPhoton();
+    }
+
+    void Init() {
+        sendButton.onClick.AddListener(CheckSendMessage);
+    }
+
+    void InitPhoton() {
         // Choose what Photon logs
         PhotonNetwork.logLevel =
             PhotonLogLevel.ErrorsOnly;
@@ -54,7 +63,7 @@ public class NetworkManager : PunBehaviour {
         print("Joining or creating room [" + ROOM_NAME + "]...");
 
         // Set username (needs validation).
-        PhotonNetwork.player.name = userName;
+        PhotonNetwork.player.name = User.GetName();
 
         // Join room if it exists or create new one otherwise.
         PhotonNetwork.JoinOrCreateRoom(
@@ -76,15 +85,6 @@ public class NetworkManager : PunBehaviour {
             + " has joined " +
             PhotonNetwork.room.name
         );
-
-        StartCoroutine(MessageInputRoutine());
-    }
-
-    IEnumerator MessageInputRoutine() {
-        while (true) {
-            CheckSendMessage();
-            yield return null;
-        }
     }
 
     void CheckSendMessage() {
@@ -93,8 +93,7 @@ public class NetworkManager : PunBehaviour {
     }
 
     bool CanSendMessage() {
-        return Input.GetKeyDown(KeyCode.Return) &&
-               messageInput.text.Length != 0;
+        return messageInput.text.Length != 0;
     }
 
     void SendMessage() {
